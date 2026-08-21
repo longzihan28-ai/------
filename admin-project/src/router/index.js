@@ -8,7 +8,35 @@ const backendRoutes = [
         children: [
                 {
                     path: 'dashboard',
-                    component: ()=>import('../views/dashboard.vue')
+                    component: ()=>import('../views/dashboard.vue'),
+                    meta: {
+                        title: '数据分析',
+                        icon: 'PieChart'
+                    }
+                },
+                {
+                    path: 'knowledge',
+                    component: ()=>import('../views/knowledge.vue'),
+                    meta: {
+                        title: '知识文章',
+                        icon: 'ChatLineSquare'
+                    }
+                },
+                {
+                    path: 'emotional',
+                    component: ()=>import('../views/emotional.vue'),
+                    meta: {
+                        title: '情绪日志',
+                        icon: 'User'
+                    }
+                },
+                {
+                    path: 'consultations',
+                    component: ()=>import('../views/consultations.vue'),
+                    meta: {
+                        title: '咨询记录',
+                        icon: 'Message'
+                    }
                 }
         ]
     }

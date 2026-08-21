@@ -5,7 +5,7 @@ import Navbar from './Navbar.vue';
 
 <template>
     <div class="backend-layout">
-    <el-container>
+    <el-container class="main-container">
       <Sidebar />
       <el-container>
         <el-header>
@@ -21,5 +21,9 @@ import Navbar from './Navbar.vue';
 <style lang="scss" scoped>
 .backend-layout {
     height: 100vh;
+
+    .main-container{
+      height: 100%;
+    }
 }
 </style>

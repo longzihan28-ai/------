@@ -1,5 +1,5 @@
 <template>
     <div>
-        任务栏
+        数据分析
     </div>
 </template>
