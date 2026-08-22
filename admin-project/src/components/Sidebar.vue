@@ -42,7 +42,8 @@ const selectMenu = (key)=>{
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
+    height: 74px;
+    padding: 0 10px;
     background-attachment: #fff;
     border-bottom: 1px solid #e5e7eb;
     .info-card {
