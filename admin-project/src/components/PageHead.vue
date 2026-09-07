@@ -20,6 +20,7 @@ const props =defineProps({
 
 <style lang="scss" scoped>
 .page-head {
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;

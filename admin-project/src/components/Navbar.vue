@@ -1,7 +1,7 @@
 <template>
     <div class = "navbar">
         <div class="flex-box">
-            <el-button>
+            <el-button @click="handleCollapse">
                 <el-icon><Expand /></el-icon>
             </el-button>
             <p class="page-title">导航栏</p>
@@ -11,7 +11,7 @@
         <div class="flex-box">
             <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
             <p class="user-name">admin</p>
-            <el-icon><ArrowDom /></el-icon>
+            <el-icon><ArrowDown /></el-icon>
         </div>
         <template #dropdown>
           <el-dropdown-menu>
@@ -24,10 +24,21 @@
 </template>
 
 <script setup>
+
+import { ref } from 'vue';
+import { ArrowDown, Expand } from '@element-plus/icons-vue'
+import {useAdminStore} from '../stores/admin'
+
 const handleCommand = (command)=> {
     if(command ==='logout'){
         //退出登录逻辑
     }
+}
+
+const handleCollapse = () =>{
+
+    useAdminStore().toggleCollapse()
+
 }
 
 </script>
