@@ -28,8 +28,6 @@ const pagination = reactive({
 })
 
 const handleSearch = async(formData)=>{
-    console.log(formData,'查询参数')
-
     const params = {
         ...pagination,
         ...formData
@@ -37,13 +35,18 @@ const handleSearch = async(formData)=>{
 
     const { records,total } = await articlePage(params)
     tableData.value=records
+    pagination.total=total
+}
+
+const handleChange = (page) => {
+    pagination.currentPage = page
+    handleSearch()
 }
 
 const categoryMap = reactive({})
 
 const categories = ref ([])
 
-//列表数据
 const tableData = ref([])
 
 onMounted (async()=>{
@@ -59,7 +62,6 @@ onMounted (async()=>{
 
     formItem[1].options=categories.value
 
-    //获取列表
     handleSearch()
 })
 
@@ -87,7 +89,7 @@ onMounted (async()=>{
                 <template #default="scope">
                     <div style="display: flex;align-items: center">
                         <el-icon><timer /></el-icon>
-                        <span>{{ categories[scope.row.categories] }}</span>
+                        <span>{{ categoryMap[scope.row.categoryId] }}</span>
                     </div>
                 </template>
             </el-table-column>
@@ -106,5 +108,14 @@ onMounted (async()=>{
             </el-table-column>
 
         </el-table>
+
+        <el-pagination 
+        style="margin-top: 25px"
+        :page-size="pagination.size"
+        layout="prev,pager,next"
+        :total="pagination.total"
+        @change="handleChange"
+        />
+
     </div>
 </template>

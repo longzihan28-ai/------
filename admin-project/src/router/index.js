@@ -68,4 +68,13 @@ const router = createRouter ({
     routes: backendRoutes
 })
 
+router.beforeEach((to, from, next) => {
+    const token = localStorage.getItem('token')
+    if(to.path.startsWith('/back') && !token) {
+        next('/auth/login')
+    } else {
+        next()
+    }
+})
+
 export default router
