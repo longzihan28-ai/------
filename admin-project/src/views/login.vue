@@ -37,6 +37,7 @@
 import {ref,reactive} from 'vue'
 import { Back } from '@element-plus/icons-vue'
 import {login} from '../api/admin'
+import {useRouter} from 'vue-router'
 
 const ruleFormRef=ref()
 
@@ -54,20 +55,26 @@ const rules = reactive ({
     ]
 })
 
+const router = useRouter()
 const submitForm = async(formEl) =>{
     if(!formEl) return 
-    await formEl.validate((valid,fields) =>{
+    await formEl.validate((valid) =>{
         if(valid) {
-            console.log(fromData,'fromData')
-            login(fromData).then(data =>{
-                // 判断token是否存在
+            login(formData).then(data =>{
                 if(!data.token) {
                     return console.log('登录失败')
                 }
 
-                //登录成功，保存token和用户信息
                 localStorage.setItem('token',data.token)
                 localStorage.setItem('userInfo',JSON.stringify(data.userInfo))
+
+                if(data.userType === '2' || data.userInfo?.userType === 2){
+                    router.push('/back/dashboard')
+                } else {
+                    
+                }
+            }).catch(err => {
+                console.error('登录请求失败:', err)
             })
         }
     })

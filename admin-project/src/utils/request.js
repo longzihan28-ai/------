@@ -26,7 +26,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response) =>{
         const {data, config} = response
-        if(data.code ==='2000') {
+        if(data.code ==='200' || data.code ==='2000') {
             return data.data
         }
         else {
@@ -38,9 +38,12 @@ service.interceptors.response.use(
                     localStorage.removeItem('userInfo')
                     window.location.href = '/auth/login'
                 } else{
-                    ElMessage.error(data.msg || '登录过期，请重新登录')
-                    return Promise.reject('网络请求失败......')
+                    ElMessage.error(data.msg || '网络请求失败')
+                    return Promise.reject(data.msg || '网络请求失败')
                 }
+            } else {
+                ElMessage.error(data.msg || '请求失败')
+                return Promise.reject(data.msg || '请求失败')
             }
         }
         return response
