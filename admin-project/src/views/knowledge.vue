@@ -2,7 +2,9 @@
 import {onMounted ,ref,reactive} from 'vue'
 import PageHead from '../components/PageHead.vue';
 import TableSearch from '../components/tableSearch.vue';
-import { categoryTree ,articlePage} from '../api/admin.js';
+import { categoryTree ,articlePage,getArticleDetail,changeArticleStatus,deleteArticle} from '../api/admin.js';
+import ArticleDialog from '../components/ArticleDialog.vue';
+import { ElMessageBox,ElMessage } from 'element-plus';
 
 const formItem=[
     {comp:'input',prop:'title',label:'文章标题',placeholder:'请输入文章标题'},
@@ -43,11 +45,86 @@ const handleChange = (page) => {
     handleSearch()
 }
 
+const handleEdit = (row)=>{
+    if(!row.id) {
+        currentArticle.value=null
+        dialogVisible.value=true
+    }else {
+    getArticleDetail(row.id).then(res => {
+        console.log(res,'编辑详情')
+        currentArticle.value= res
+        dialogVisible.value=true
+    })
+ }
+}
+
+const handlePublish = (row) =>{
+    ElMessageBox.confirm (
+        `确认发布文章${row.title}吗？`,
+        `确认`,
+        {
+            confirmButtonText: '确认发布',
+            cancelButtonText: '取消',
+            type: 'info'
+        }
+    ).then(()=>{
+        changeArticleStatus(row.id,{status: 1}).then(row =>{
+            ElMessage.success('发布成功')
+            handleSearch()
+        })
+    })
+}
+
+const handleUnpublish = (row) =>{
+    ElMessageBox.confirm (
+        `确认下线文章${row.title}吗？`,
+        `确认`,
+        {
+            confirmButtonText: '确认下线',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }
+    ).then(()=>{
+        changeArticleStatus(row.id,{status: 2}).then(row =>{
+            ElMessage.success('下线成功')
+            handleSearch()
+        })
+    })
+}
+
+const handleDelete = (row) => {
+    ElMessageBox.confirm (
+        `确认删除文章${row.title}吗？`,
+        `确认`,
+        {
+            confirmButtonText: '确认删除',
+            cancelButtonText: '取消',
+            type: 'danger'
+        }
+    ).then(()=>{
+        deleteArticle(row.id).then(row =>{
+            ElMessage.success('删除成功')
+            handleSearch()
+        })
+    })
+}
+
+const handleSuccess = () => {
+    dialogVisible.value = false
+    handleSearch()
+}
+
+const currentArticle = ref(null)
+
 const categoryMap = reactive({})
 
 const categories = ref ([])
 
+//列表数据
 const tableData = ref([])
+
+//新增与编辑
+const dialogVisible = ref(false)
 
 onMounted (async()=>{
     const data = await categoryTree()
@@ -60,6 +137,8 @@ onMounted (async()=>{
         }
     })
 
+    console.log(categories.value)
+
     formItem[1].options=categories.value
 
     handleSearch()
@@ -71,7 +150,7 @@ onMounted (async()=>{
     <div>
         <PageHead title="知识文章">
             <template #buttons>
-                <el-button type="primary">新增</el-button>
+                <el-button @click="handleEdit({})" type="primary">新增</el-button>
             </template>
         </PageHead>
         <TableSearch  :formItem="formItem" @search="handleSearch"/>
@@ -96,14 +175,14 @@ onMounted (async()=>{
 
             <el-table-column prop="authorName" label="作者"  width="150" />
             <el-table-column prop="readCount" label="阅读量" width="150"/>
-            <el-table-column prop="publishedAt" label="发布时间" width="150"/>
+            <el-table-column prop="updateAt" label="发布时间" width="150"/>
 
             <el-table-column label="操作" width="240" fixed="right">
                 <template #default="scope">
-                    <el-button text type="primary">编辑</el-button>
-                    <el-button v-if="scope.row.status === 0 || scope.row.status === 2" text type="success">发布</el-button>
-                    <el-button v-if="scope.row.status === 1" text type="warning">下线</el-button>
-                    <el-button text type="danger">删除</el-button>
+                    <el-button @click="handleEdit(scope.row)" text type="primary">编辑</el-button>
+                    <el-button @click="handlePublish(scope.row)" v-if="scope.row.status === 0 || scope.row.status === 2" text type="success">发布</el-button>
+                    <el-button @click="handleUnpublish(scope.row)" v-if="scope.row.status === 1" text type="warning">下线</el-button>
+                    <el-button @click="handleDelete(scope.row)" text type="danger" >删除</el-button>
                 </template>
             </el-table-column>
 
@@ -116,6 +195,6 @@ onMounted (async()=>{
         :total="pagination.total"
         @change="handleChange"
         />
-
+        <ArticleDialog v-model:modelValue="dialogVisible" :article="currentArticle" :categories="categories" @success="handleSuccess"/>
     </div>
 </template>
