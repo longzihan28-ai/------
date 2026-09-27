@@ -45,3 +45,27 @@ export function changeArticleStatus (id,data) {
 export function deleteArticle(id) {
     return service.delete(`/knowledge/article/${id}`)
 }
+
+export function getConsultationPage(params) {
+    return service.get('/psychological-chat/sessions',{params})
+}
+
+export function getSessionDetail(sessionId) {
+    return service.get(`/psychological-chat/sessions/${sessionId}/messages`)
+}
+
+export function getEmotionalPage(params) {
+    return service.get('/emotion-diary/admin/page',{params})
+}
+
+export function deleteEmotional(id) {
+    return service.delete(`/emotion-diary/admin/${id}`)
+}
+
+export function getAnalyticsOverview() {
+    return service.get(`/data-analytics/overview`)
+}
+
+export function logout() {
+    return service.post(`/user/logout`)
+}

@@ -5,6 +5,7 @@ import AuthLayout from "../components/AuthLayout.vue";
 const backendRoutes = [
     {
         path: '/back',
+        redirect: '/back/dashboard',
         component: BackendLayout,
         children: [
                 {
@@ -70,10 +71,23 @@ const router = createRouter ({
 
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('token')
-    if(to.path.startsWith('/back') && !token) {
-        next('/auth/login')
+    if(token) {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+        if(userInfo.userType == 2){
+                if(to.path.startsWith('/back')) {
+                    next()
+                } else {
+                    next('/back/dashboard')
+                }
+           } else if(userInfo.userType === 1) {
+            
+           }
     } else {
-        next()
+        if(to.path.startsWish('/back')) {
+            next('/auth/login')
+        } else {
+            next()
+        }
     }
 })
 
