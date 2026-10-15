@@ -30,25 +30,18 @@ service.interceptors.response.use(
             return data.data
         }
         else {
-            if(data.code === '-1'){
-                if(!config.url?.includes('/login')) {
-                    ElMessage.error(data.msg || '登录过期，请重新登录')
-                    
-                    localStorage.removeItem('token')
-                    localStorage.removeItem('userInfo')
-                    window.location.href = '/auth/login'
-                } else{
-                    ElMessage.error(data.msg || '网络请求失败')
-                    return Promise.reject(data.msg || '网络请求失败')
-                }
-            } else {
+            //code -1/500 等是后端业务错误码，只提示并拒绝Promise；
+            //真正的登录过期由 HTTP 401/403 处理，不能在这里强制退出
+            //config.silent 用于轮询类请求（如情绪分析），失败时由调用方自行处理，不弹全局提示
+            if(!config.silent) {
                 ElMessage.error(data.msg || '请求失败')
-                return Promise.reject(data.msg || '请求失败')
             }
+            return Promise.reject(data.msg || '请求失败')
         }
         return response
     },
     (error) =>{
+        const cfg = error.config || {}
         if(error.response) {
             const { status, data } = error.response
             if(status === 401 || status === 403) {
@@ -56,10 +49,10 @@ service.interceptors.response.use(
                 localStorage.removeItem('token')
                 localStorage.removeItem('userInfo')
                 window.location.href = '/auth/login'
-            } else {
+            } else if(!cfg.silent) {
                 ElMessage.error(data?.msg || `请求失败(${status})`)
             }
-        } else {
+        } else if(!cfg.silent) {
             ElMessage.error(error.message || '网络错误')
         }
         return Promise.reject(error)

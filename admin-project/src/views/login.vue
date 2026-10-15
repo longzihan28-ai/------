@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="title">
-            <div class="back-home">
+            <div class="back-home" @click="goHome">
                 <el-icon><Back /></el-icon>
                 <span>返回首页</span>
             </div>
@@ -56,6 +56,10 @@ const rules = reactive ({
 })
 
 const router = useRouter()
+
+const goHome = () => {
+    router.push('/')
+}
 const submitForm = async(formEl) =>{
     if(!formEl) return 
     await formEl.validate((valid) =>{
@@ -71,7 +75,8 @@ const submitForm = async(formEl) =>{
                 if(data.userType === '2' || data.userInfo?.userType === 2){
                     router.push('/back/dashboard')
                 } else {
-                    
+                    //普通用户登录成功后跳转到前台首页
+                    router.push('/')
                 }
             }).catch(err => {
                 console.error('登录请求失败:', err)
@@ -87,6 +92,7 @@ const submitForm = async(formEl) =>{
     .title {
         .back-home {
             margin-bottom: 60px;
+            cursor: pointer;
         }
         .title-text {
             text-align: center;

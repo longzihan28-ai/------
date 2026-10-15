@@ -77,7 +77,7 @@
                 <h4>日记内容</h4>
                 <el-descriptions :column="1" border>
                     <el-descriptions-item label="情绪触发因素">{{ currentDetail.emotionTriggers || '无' }}</el-descriptions-item>
-                    <el-descriptions-item label="日记内容">{{ currentDetail.diaryContent || '无' }}</el-descriptions-item>
+                    <el-description-item label="日记内容">{{ currentDetail.diaryContent || '无' }}</el-description-item>
                 </el-descriptions>
             </div>
             <div class="detail-section">

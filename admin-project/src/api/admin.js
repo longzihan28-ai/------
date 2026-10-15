@@ -46,16 +46,8 @@ export function deleteArticle(id) {
     return service.delete(`/knowledge/article/${id}`)
 }
 
-export function getConsultationPage(params) {
+export function getConsultationPage(Params) {
     return service.get('/psychological-chat/sessions',{params})
-}
-
-export function getSessionDetail(sessionId) {
-    return service.get(`/psychological-chat/sessions/${sessionId}/messages`)
-}
-
-export function getEmotionalPage(params) {
-    return service.get('/emotion-diary/admin/page',{params})
 }
 
 export function deleteEmotional(id) {
